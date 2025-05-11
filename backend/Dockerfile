@@ -12,6 +12,10 @@ COPY . .
 
 RUN npm run build
 
+# Script d'entrée pour copier le bon .env
+COPY docker-entrypoint.sh /usr/src/app/docker-entrypoint.sh
+RUN chmod +x /usr/src/app/docker-entrypoint.sh
+
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["/usr/src/app/docker-entrypoint.sh"]
