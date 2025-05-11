@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String               @id @default(uuid())
+  email     String               @unique
+  firstname String
+  lastname  String
+  password  String
+  role      String               @default("user")
+  avatarId  String?
+  avatar    Avatar?              @relation(fields: [avatarId], references: [id])
+  leagues   UserLeague[]
+  bets      BetSelectionResult[]
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
+model Avatar {
+  id               String   @id @default(uuid())
+  pictureAvatarUrl String
+  users            User[]
+  leagues          League[]
+}
+
+model League {
+  id         String       @id @default(uuid())
+  name       String
+  private    Boolean
+  sharedLink String?      @unique
+  active     Boolean      @default(true)
+  avatarId   String?
+  avatar     Avatar?      @relation(fields: [avatarId], references: [id])
+  users      UserLeague[]
+  createdAt  DateTime     @default(now())
+}
+
+model UserLeague {
+  id       String @id @default(uuid())
+  league   League @relation(fields: [leagueId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  role     String // 'admin' ou 'user'
+  leagueId String
+  userId   String
+
+  @@unique([leagueId, userId])
+}
+
+model GP {
+  id         String               @id @default(uuid())
+  idApiRace  Int                  @unique
+  season     String
+  datetime   DateTime
+  trackId    String
+  track      Track                @relation(fields: [trackId], references: [id])
+  pilotes    GPPilote[]
+  classement GPClassement[]
+  bets       BetSelectionResult[]
+}
+
+model Track {
+  id                String  @id @default(uuid())
+  idApiTrack        Int     @unique
+  countryName       String
+  trackName         String
+  pictureCountryUrl String?
+  pictureTrackUrl   String?
+  gps               GP[]
+}
+
+model Pilote {
+  id          String               @id @default(uuid())
+  idApiPilote Int                  @unique
+  name        String
+  pictureUrl  String?
+  nameAcronym String
+  ecuries     PiloteEcurie[]
+  gpPilotes   GPPilote[]
+  betsP10     BetSelectionResult[] @relation("PiloteP10")
+  betsDNF     BetSelectionResult[] @relation("PiloteDNF")
+}
+
+model Ecurie {
+  id          String         @id @default(uuid())
+  idApiEcurie Int            @unique
+  name        String
+  logoUrl     String?
+  color       String?
+  pilotes     PiloteEcurie[]
+  gpPilotes   GPPilote[]
+}
+
+model PiloteEcurie {
+  id       String @id @default(uuid())
+  pilote   Pilote @relation(fields: [piloteId], references: [id])
+  ecurie   Ecurie @relation(fields: [ecurieId], references: [id])
+  year     String
+  piloteId String
+  ecurieId String
+}
+
+model GPPilote {
+  id         String         @id @default(uuid())
+  gp         GP             @relation(fields: [gpId], references: [id])
+  pilote     Pilote         @relation(fields: [piloteId], references: [id])
+  ecurie     Ecurie         @relation(fields: [ecurieId], references: [id])
+  gpId       String
+  piloteId   String
+  ecurieId   String
+  classement GPClassement[]
+}
+
+model GPClassement {
+  id         String   @id @default(uuid())
+  gp         GP       @relation(fields: [gpId], references: [id])
+  gpPilote   GPPilote @relation(fields: [gpPiloteId], references: [id])
+  isDNF      Boolean
+  position   Int
+  gpId       String
+  gpPiloteId String
+}
+
+model BetSelectionResult {
+  id          String  @id @default(uuid())
+  user        User    @relation(fields: [userId], references: [id])
+  gp          GP      @relation(fields: [gpId], references: [id])
+  piloteP10   Pilote? @relation("PiloteP10", fields: [piloteP10Id], references: [id])
+  piloteDNF   Pilote? @relation("PiloteDNF", fields: [piloteDNFId], references: [id])
+  pointsP10   Int?
+  pointsDNF   Int?
+  userId      String
+  gpId        String
+  piloteP10Id String?
+  piloteDNFId String?
+
+  @@unique([userId, gpId])
+}
