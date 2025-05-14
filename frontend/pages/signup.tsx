@@ -39,7 +39,31 @@ export default function Signup() {
       setLoading(false);
       return;
     }
-    setTimeout(() => { setSuccess(true); setLoading(false); }, 1200); // démo
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+          firstname: form.firstname,
+          lastname: form.lastname
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Erreur inconnue');
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1200);
+      }
+    } catch {
+      setError('Erreur réseau. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

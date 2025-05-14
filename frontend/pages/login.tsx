@@ -22,7 +22,29 @@ export default function Login() {
     setLoading(true);
     setError("");
     setSuccess(false);
-    setTimeout(() => { setSuccess(true); setLoading(false); }, 1200); // démo
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Erreur inconnue');
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1200);
+      }
+    } catch {
+      setError('Erreur réseau. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
