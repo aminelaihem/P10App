@@ -15,8 +15,14 @@ export class LeagueModel {
   @Field({ nullable: true })
   sharedLink?: string;
 
+  @Field({ nullable: true })
+  avatarId?: string;
+
   @Field()
-  active: boolean;
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 
   @Field(() => [UserModel])
   users: UserModel[];

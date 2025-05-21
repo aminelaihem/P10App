@@ -5,6 +5,9 @@ export class CreateLeagueInput {
   @Field()
   name: string;
 
-  @Field({ defaultValue: false })
+  @Field()
   private: boolean;
+
+  @Field({ nullable: true })
+  avatarId?: string;
 }

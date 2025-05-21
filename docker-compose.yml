@@ -20,12 +20,8 @@ services:
     restart: always
     env_file:
       - ./backend/.env.dev
-    environment:
-      - ENV_FILE=.env.dev
     depends_on:
       - postgres
-    volumes:
-      - backend-data:/usr/src/app
     working_dir: /usr/src/app
     ports:
       - '3001:3000'
@@ -50,3 +46,4 @@ services:
 volumes:
   pgdata:
   backend-data:
+
