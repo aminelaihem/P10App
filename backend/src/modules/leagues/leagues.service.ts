@@ -8,11 +8,20 @@ export class LeaguesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createLeague(input: CreateLeagueInput, userId: string) {
+    if (input.avatarId) {
+      const avatar = await this.prisma.avatar.findUnique({
+        where: { id: input.avatarId },
+      });
+      if (!avatar) {
+        throw new NotFoundException('Avatar non trouvé.');
+      }
+    }
+
     const league = await this.prisma.league.create({
       data: {
         name: input.name,
         private: input.private,
-        sharedLink: input.private ? null : crypto.randomUUID(),
+        sharedLink: input.private ? crypto.randomUUID() : null,
         avatarId: input.avatarId ?? null,
         users: {
           create: {
