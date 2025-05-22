@@ -52,12 +52,27 @@ export class LeaguesService {
   }
 
   async joinLeague(input: JoinLeagueInput, userId: string) {
-    const league = await this.prisma.league.findUnique({
-      where: { sharedLink: input.sharedLink },
-    });
+    let league;
 
-    if (!league || league.private) {
-      throw new NotFoundException('Ligue non trouvée ou privée.');
+    if (input.sharedLink) {
+      league = await this.prisma.league.findUnique({
+        where: { sharedLink: input.sharedLink },
+      });
+    } else if (input.leagueId) {
+      league = await this.prisma.league.findUnique({
+        where: { id: input.leagueId },
+      });
+    } else {
+      throw new NotFoundException('Aucun identifiant de ligue fourni.');
+    }
+
+    if (!league) {
+      throw new NotFoundException('Ligue non trouvée.');
+    }
+
+    // Si la ligue est privée, on ne peut la rejoindre qu'avec un sharedLink
+    if (league.private && !input.sharedLink) {
+      throw new ForbiddenException('Cette ligue est privée. Un lien de partage est requis.');
     }
 
     const alreadyJoined = await this.prisma.userLeague.findUnique({
