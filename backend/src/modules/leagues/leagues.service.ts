@@ -57,10 +57,16 @@ export class LeaguesService {
     if (input.sharedLink) {
       league = await this.prisma.league.findUnique({
         where: { sharedLink: input.sharedLink },
+        include: {
+          users: true
+        }
       });
     } else if (input.leagueId) {
       league = await this.prisma.league.findUnique({
         where: { id: input.leagueId },
+        include: {
+          users: true
+        }
       });
     } else {
       throw new NotFoundException('Aucun identifiant de ligue fourni.');
@@ -91,7 +97,13 @@ export class LeaguesService {
       },
     });
 
-    return league;
+    // Récupérer la ligue mise à jour avec les utilisateurs
+    return this.prisma.league.findUnique({
+      where: { id: league.id },
+      include: {
+        users: true
+      }
+    });
   }
 
   async leaveLeague(leagueId: string, userId: string) {
