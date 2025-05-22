@@ -1,4 +1,3 @@
-
 services:
   postgres:
     image: postgres:15
@@ -13,6 +12,17 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - '5432:5432'
+
+  postgres_test:
+    image: postgres:15
+    container_name: p10_postgres_test
+    restart: always
+    environment:
+      POSTGRES_USER: p10user
+      POSTGRES_PASSWORD: p10pass
+      POSTGRES_DB: p10db_test
+    ports:
+      - '5433:5432'
 
   backend:
     build: ./backend

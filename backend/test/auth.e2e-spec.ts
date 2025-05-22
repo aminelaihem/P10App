@@ -20,10 +20,14 @@ describe('AuthModule (e2e)', () => {
     await app.init();
 
     prisma = new PrismaClient();
-    await prisma.user.deleteMany(); // clean
+    await prisma.userLeague.deleteMany();
+    await prisma.league.deleteMany();
+    await prisma.user.deleteMany();
   });
 
   afterAll(async () => {
+    await prisma.userLeague.deleteMany();
+    await prisma.league.deleteMany();
     await prisma.user.deleteMany();
     await app.close();
   });
@@ -84,7 +88,7 @@ describe('AuthModule (e2e)', () => {
         .send({ query: signupMutation('notanemail', 'StrongPass123@') });
 
       expect(res.body.errors).toBeDefined();
-      expect(res.body.errors[0].message).toMatch(/email/i); // message exact selon class-validator
+      expect(res.body.errors[0].message).toMatch(/email/i);
     });
 
     it('should fail with weak password', async () => {
