@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from '@prisma/client';
+import { AvatarModel } from './models/avatar.model';
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,7 @@ export class UsersService {
         firstname: data.firstname.trim(),
         lastname: data.lastname.trim(),
         password: hashed,
+        avatarId: data.avatarId,
         role: 'user',
       },
     });
@@ -54,5 +56,9 @@ export class UsersService {
 
   async findById(id: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async getAvailableAvatars(): Promise<AvatarModel[]> {
+    return this.prisma.avatar.findMany();
   }
 }

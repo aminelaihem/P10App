@@ -20,7 +20,10 @@
     "test:e2e": "dotenv -e .env.test -- jest --config ./test/jest-e2e.json",
     "migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy",
     "clean:schema": "del src\\schema.gql",
-    "test:e2e:full": "npm run migrate:test && npm run test:e2e && npm run clean:schema"
+    "test:e2e:full": "npm run migrate:test && npm run test:e2e && npm run clean:schema",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.12.0",
