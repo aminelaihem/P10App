@@ -2,6 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaFlagCheckered, FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 import Image from "next/image";
+import AvatarSelector from "../components/AvatarSelector";
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ export default function Signup() {
     confirmPassword: "",
     firstname: "",
     lastname: "",
+    avatarId: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +29,10 @@ export default function Signup() {
           : value === form.password
       );
     }
+  };
+
+  const handleAvatarSelect = (avatarId: string) => {
+    setForm({ ...form, avatarId });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +53,8 @@ export default function Signup() {
           email: form.email,
           password: form.password,
           firstname: form.firstname,
-          lastname: form.lastname
+          lastname: form.lastname,
+          avatarId: form.avatarId
         })
       });
       const data = await res.json();
@@ -156,6 +163,9 @@ export default function Signup() {
             aria-label="Confirmer le mot de passe"
           />
         </div>
+
+        <AvatarSelector onSelect={handleAvatarSelect} selectedAvatarId={form.avatarId} />
+
         {!passwordMatch && (
           <div className="text-f1red text-sm text-center font-semibold animate-pulse">Les mots de passe ne correspondent pas.</div>
         )}
