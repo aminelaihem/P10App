@@ -1,26 +1,79 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+@layer components {
+  .input-group-f1 {
+    @apply relative flex items-center bg-white/10 rounded-3xl shadow-xl mb-1 transition-all overflow-hidden;
+  }
+
+  .input-group-f1:focus-within {
+    @apply shadow-[0_0_0_4px_#d9042999,_0_2px_24px_#d9042920] bg-white/20;
+  }
+
+  .input-icon-f1 {
+    @apply ml-4 mr-2 text-f1red text-lg opacity-85 pointer-events-none;
+  }
+
+  .input-f1 {
+    @apply flex-1 bg-transparent border-none outline-none text-white font-barlow text-lg font-bold px-4 py-3 rounded-3xl placeholder-white/70 transition-all;
+  }
+
+  .btn-f1-red {
+    @apply w-full py-3 rounded-2xl bg-gradient-to-r from-f1red via-black to-f1red text-white font-f1 text-xl font-bold shadow-lg border-none transition duration-200;
+    box-shadow: 0 0 32px 8px #d90429cc, 0 2px 8px #000a;
+    text-shadow: 0 0 12px #fff, 0 0 2px #d90429;
+    letter-spacing: 0.12em;
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5em;
+    background: linear-gradient(90deg, #d90429 0%, #1a1a1a 100%);
+  }
+
+  .btn-f1-red:hover,
+  .btn-f1-red:focus {
+    @apply outline-none;
+    box-shadow: 0 0 0 4px #d9042999, 0 2px 8px #000a;
+    color: #fff;
+  }
+
+  .loader-f1-red {
+    @apply inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    border: 3px solid #d90429;
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: f1spin 0.7s linear infinite;
+    margin-left: 0.5em;
+  }
 }
 
+@keyframes f1spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

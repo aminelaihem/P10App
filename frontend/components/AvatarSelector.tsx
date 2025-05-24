@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { FaUserCircle } from 'react-icons/fa';
+// components/AvatarSelector.tsx
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { FaUserCircle } from "react-icons/fa";
 
 interface Avatar {
   id: string;
@@ -19,11 +20,11 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
   useEffect(() => {
     const fetchAvatars = async () => {
       try {
-        const response = await fetch('/api/avatars');
+        const response = await fetch("/api/avatars");
         const data = await response.json();
         setAvatars(data);
       } catch (error) {
-        console.error('Erreur lors du chargement des avatars:', error);
+        console.error("Erreur lors du chargement des avatars:", error);
       } finally {
         setLoading(false);
       }
@@ -54,8 +55,8 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
             onClick={() => onSelect(avatar.id)}
             className={`relative aspect-square rounded-lg overflow-hidden transition-all duration-200 
               ${selectedAvatarId === avatar.id 
-                ? 'ring-4 ring-f1red scale-105' 
-                : 'ring-2 ring-white/20 hover:ring-white/40'}`}
+                ? "ring-4 ring-f1red scale-105" 
+                : "ring-2 ring-white/20 hover:ring-white/40"}`}
           >
             <Image
               src={avatar.pictureAvatarUrl}
@@ -68,4 +69,4 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
       </div>
     </div>
   );
-} 
+}
