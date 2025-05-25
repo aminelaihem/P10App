@@ -18,7 +18,10 @@ export class F1DataService implements OnModuleInit {
 
   async onModuleInit() {
     const year = '2025';
+    await this.syncAllData(year);
+  }
 
+  async syncAllData(year: string) {
     this.logger.log(`Démarrage de la synchronisation F1 ${year}...`);
 
     try {
@@ -32,5 +35,21 @@ export class F1DataService implements OnModuleInit {
       this.logger.error('❌Erreur pendant la synchronisation F1', err);
       throw err;
     }
+  }
+
+  async syncPilotes(year: string) {
+    return this.pilotesService.syncPilotesEtEcuries(year);
+  }
+
+  async syncTracks(year: string) {
+    return this.tracksService.syncTracksFromMeetings(year);
+  }
+
+  async syncGPs(year: string) {
+    return this.gpsService.syncGPsFromMeetings(year);
+  }
+
+  async syncResults() {
+    return this.resultsService.syncAllAvailableResults();
   }
 }

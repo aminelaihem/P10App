@@ -7,6 +7,7 @@ import { SyncPilotesService } from './sync/sync.pilotes';
 import { SyncTracksService } from './sync/sync.tracks';
 import { SyncGPsService } from './sync/sync.gps';
 import { SyncResultsService } from './sync/sync.results';
+import { F1DataResolver } from './f1data.resolver';
 
 @Module({
   imports: [HttpModule],
@@ -17,6 +18,7 @@ import { SyncResultsService } from './sync/sync.results';
     SyncTracksService,
     SyncGPsService,
     SyncResultsService,
+    F1DataResolver,
   ],
   exports: [F1DataService],
 })
