@@ -44,14 +44,14 @@ export class SyncPilotesService {
 
       for (const driver of uniqueDrivers.values()) {
         // 1. Handle Ecurie
-        let ecurie = await this.prisma.ecurie.findUnique({
+        let ecurie = await this.prisma.ecurie.findFirst({
           where: { name: driver.team_name },
         });
 
         if (!ecurie) {
           ecurie = await this.prisma.ecurie.create({
             data: {
-              idApiEcurie: driver.driver_number, // temporaire, car OpenF1 n’a pas d’id écurie stable
+              idApiEcurie: driver.driver_number, // temporaire, car OpenF1 n'a pas d'id écurie stable
               name: driver.team_name,
               color: driver.team_colour || null,
             },
