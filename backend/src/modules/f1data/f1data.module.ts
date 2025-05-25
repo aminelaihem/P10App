@@ -6,7 +6,6 @@ import { SyncPilotesService } from './sync/sync.pilotes';
 import { SyncTracksService } from './sync/sync.tracks';
 import { SyncGPsService } from './sync/sync.gps';
 import { SyncResultsService } from './sync/sync.results';
-
 @Module({
   imports: [HttpModule],
   providers: [

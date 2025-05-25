@@ -7,7 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LeaguesModule } from './modules/leagues/leagues.module';
 import { ConfigModule } from '@nestjs/config';
-
+import { F1DataModule } from './modules/f1data/f1data.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), 
@@ -24,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     AuthModule,
     LeaguesModule,
+    F1DataModule,
   ],
 })
 export class AppModule {}
