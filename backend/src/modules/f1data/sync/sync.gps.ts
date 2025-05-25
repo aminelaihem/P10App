@@ -1,68 +1,63 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { F1_API_CONFIG } from '../config/api.config';
+import { OpenF1Meeting } from '../types/f1-api.types';
 import { firstValueFrom } from 'rxjs';
-
-interface OpenF1Meeting {
-  meeting_key: number;
-  date_start: string;
-  year: number;
-  circuit_key: number;
-  meeting_name: string;
-  country_name: string;
-}
 
 @Injectable()
 export class SyncGPsService {
   private readonly logger = new Logger(SyncGPsService.name);
-  private readonly MEETINGS_URL = 'https://api.openf1.org/v1/meetings';
 
   constructor(
-    private readonly http: HttpService,
+    private readonly httpService: HttpService,
     private readonly prisma: PrismaService,
   ) {}
 
-  async syncGPsFromMeetings(year: string) {
+  async syncGPsFromMeetings(year: string): Promise<void> {
     try {
-      this.logger.log(`Fetching GPs from meetings for year ${year}...`);
-
-      const { data }: { data: OpenF1Meeting[] } = await firstValueFrom(
-        this.http.get(`${this.MEETINGS_URL}?year=${year}`),
+      this.logger.log(`🔄 Synchronisation des Grands Prix pour ${year}...`);
+      
+      const url = `${F1_API_CONFIG.OPENF1_BASE_URL}${F1_API_CONFIG.endpoints.meetings}?year=${year}`;
+      const { data: meetings } = await firstValueFrom(
+        this.httpService.get<OpenF1Meeting[]>(url),
       );
 
-      for (const meeting of data) {
+      for (const meeting of meetings) {
+        // Trouver le circuit correspondant
         const track = await this.prisma.track.findUnique({
           where: { idApiTrack: meeting.circuit_key },
         });
 
         if (!track) {
-          this.logger.warn(
-            `Track non trouvé pour circuit_key ${meeting.circuit_key}. GP ignoré.`,
-          );
+          this.logger.warn(`Circuit non trouvé pour le GP: ${meeting.meeting_name}`);
           continue;
         }
 
-        const existing = await this.prisma.gP.findUnique({
-          where: { idApiRace: meeting.meeting_key },
+        // Créer ou mettre à jour le GP
+        await this.prisma.gP.upsert({
+          where: {
+            idApiRace: meeting.meeting_key,
+          },
+          create: {
+            idApiRace: meeting.meeting_key,
+            season: year,
+            datetime: new Date(meeting.date_start),
+            trackId: track.id,
+          },
+          update: {
+            season: year,
+            datetime: new Date(meeting.date_start),
+            trackId: track.id,
+          },
         });
 
-        if (!existing) {
-          await this.prisma.gP.create({
-            data: {
-              idApiRace: meeting.meeting_key,
-              season: year,
-              datetime: new Date(meeting.date_start),
-              trackId: track.id,
-            },
-          });
-
-          this.logger.log(`GP créé : ${meeting.meeting_name} (${meeting.date_start})`);
-        }
+        this.logger.log(`✅ GP synchronisé: ${meeting.meeting_name}`);
       }
 
-      this.logger.log('Synchronisation des GP terminée.');
+      this.logger.log('✅ Synchronisation des Grands Prix terminée');
     } catch (error) {
-      this.logger.error('Erreur lors de la synchronisation des GP', error);
+      this.logger.error('❌ Erreur lors de la synchronisation des Grands Prix:', error);
       throw error;
     }
   }
