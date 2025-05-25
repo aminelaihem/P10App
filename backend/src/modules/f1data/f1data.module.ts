@@ -1,0 +1,22 @@
+import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { F1DataService } from './f1data.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { SyncPilotesService } from './sync/sync.pilotes';
+import { SyncTracksService } from './sync/sync.tracks';
+import { SyncGPsService } from './sync/sync.gps';
+import { SyncResultsService } from './sync/sync.results';
+
+@Module({
+  imports: [HttpModule],
+  providers: [
+    F1DataService,
+    PrismaService,
+    SyncPilotesService,
+    SyncTracksService,
+    SyncGPsService,
+    SyncResultsService,
+  ],
+  exports: [F1DataService],
+})
+export class F1DataModule {}
