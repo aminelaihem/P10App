@@ -24,16 +24,18 @@ export class SyncTracksService {
       );
 
       for (const meeting of meetings) {
+        const idApiTrack = parseInt(`${meeting.circuit_key}`);
+
         await this.prisma.track.upsert({
           where: {
-            idApiTrack: meeting.circuit_key,
+            idApiTrack,
           },
           create: {
-            idApiTrack: meeting.circuit_key,
+            idApiTrack,
             countryName: meeting.country_name,
             trackName: meeting.circuit_short_name,
-            pictureCountryUrl: null, // À implémenter si nécessaire
-            pictureTrackUrl: null, // À implémenter si nécessaire
+            pictureCountryUrl: null,
+            pictureTrackUrl: null,
           },
           update: {
             countryName: meeting.country_name,

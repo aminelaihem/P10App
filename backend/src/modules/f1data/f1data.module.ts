@@ -10,22 +10,25 @@ import { SyncGPsService } from './sync/sync.gps';
 import { SyncResultsService } from './sync/sync.results';
 import { F1DataResolver } from './f1data.resolver';
 import { F1DataSchedulerService } from './f1data-scheduler.service';
-
+import { F1EntryService } from './f1-entry.service';
+import { SyncCalendarService } from './sync/sync.calendar';
 @Module({
   imports: [
     HttpModule,
     ScheduleModule.forRoot()
   ],
   providers: [
-    F1DataService,
     PrismaService,
+    F1EntryService,
     SyncPilotesService,
     SyncTracksService,
     SyncGPsService,
     SyncResultsService,
+    F1DataService,
     F1DataResolver,
     F1DataSchedulerService,
+    SyncCalendarService,
   ],
-  exports: [F1DataService],
+  exports: [F1DataService, F1EntryService, SyncCalendarService],
 })
 export class F1DataModule {}

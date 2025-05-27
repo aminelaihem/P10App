@@ -39,6 +39,9 @@ model League {
   avatar     Avatar?      @relation(fields: [avatarId], references: [id])
   users      UserLeague[]
   createdAt  DateTime     @default(now())
+
+  bets       BetSelectionResult[]
+
 }
 
 model UserLeague {
@@ -130,6 +133,10 @@ model BetSelectionResult {
   id          String  @id @default(uuid())
   user        User    @relation(fields: [userId], references: [id])
   gp          GP      @relation(fields: [gpId], references: [id])
+
+  league      League  @relation(fields: [leagueId], references: [id])
+  leagueId    String 
+
   piloteP10   Pilote? @relation("PiloteP10", fields: [piloteP10Id], references: [id])
   piloteDNF   Pilote? @relation("PiloteDNF", fields: [piloteDNFId], references: [id])
   pointsP10   Int?
@@ -139,5 +146,5 @@ model BetSelectionResult {
   piloteP10Id String?
   piloteDNFId String?
 
-  @@unique([userId, gpId])
+  @@unique([userId, gpId, leagueId])
 }

@@ -24,17 +24,35 @@ export class SyncGPsService {
       );
 
       for (const meeting of meetings) {
-        // Trouver le circuit correspondant
-        const track = await this.prisma.track.findUnique({
-          where: { idApiTrack: meeting.circuit_key },
+        const idApiTrack = parseInt(`${meeting.circuit_key}`);
+
+        // 1. Recherche directe par idApiTrack
+        let track = await this.prisma.track.findUnique({
+          where: { idApiTrack },
         });
 
+        // 2. Si pas trouvé, tentative par nom approximatif
         if (!track) {
-          this.logger.warn(`Circuit non trouvé pour le GP: ${meeting.meeting_name}`);
+          const tracks = await this.prisma.track.findMany();
+          const possibleMatch = tracks.find((t) =>
+            meeting.circuit_short_name
+              .toLowerCase()
+              .includes(t.trackName.toLowerCase()),
+          );
+
+          if (possibleMatch) {
+            this.logger.warn(
+              `🔁 Aucun match exact pour "${meeting.circuit_short_name}", mais trouvé "${possibleMatch.trackName}" par correspondance.`,
+            );
+            track = possibleMatch;
+          }
+        }
+
+        if (!track) {
+          this.logger.warn(`❌ Circuit introuvable pour GP: ${meeting.meeting_name}`);
           continue;
         }
 
-        // Créer ou mettre à jour le GP
         await this.prisma.gP.upsert({
           where: {
             idApiRace: meeting.meeting_key,

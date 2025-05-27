@@ -14,7 +14,7 @@ export interface OpenF1Driver {
 }
 
 export interface OpenF1Meeting {
-  circuit_key: number;
+  circuit_key: string | number;
   circuit_short_name: string;
   country_code: string;
   country_key: number;

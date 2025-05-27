@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { LeaguesModule } from './modules/leagues/leagues.module';
 import { ConfigModule } from '@nestjs/config';
 import { F1DataModule } from './modules/f1data/f1data.module';
+import { BetSelectionModule } from './modules/bet-selection/bet-selection.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), 
@@ -25,6 +26,7 @@ import { F1DataModule } from './modules/f1data/f1data.module';
     AuthModule,
     LeaguesModule,
     F1DataModule,
+    BetSelectionModule,
   ],
 })
 export class AppModule {}
