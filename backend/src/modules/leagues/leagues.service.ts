@@ -6,8 +6,22 @@ import { JoinLeagueInput } from './dto/join-league.input';
 @Injectable()
 export class LeaguesService implements OnModuleInit {
   private readonly MAIN_LEAGUE_NAME = 'Ligue Principale';
+  // Caractères non ambigus (pas de 0/O, 1/I, etc.)
+  private readonly ALLOWED_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   
   constructor(private readonly prisma: PrismaService) {}
+
+  private generateSharedLink(): string {
+    let result = '';
+    const length = 8; // Longueur fixe de 8 caractères
+    
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * this.ALLOWED_CHARS.length);
+      result += this.ALLOWED_CHARS[randomIndex];
+    }
+    
+    return result;
+  }
 
   async onModuleInit() {
     await this.getOrCreateMainLeague();
@@ -23,6 +37,7 @@ export class LeaguesService implements OnModuleInit {
         data: {
           name: this.MAIN_LEAGUE_NAME,
           private: false,
+          sharedLink: this.generateSharedLink(),
         },
       });
     }
@@ -44,7 +59,7 @@ export class LeaguesService implements OnModuleInit {
       data: {
         name: input.name,
         private: input.private,
-        sharedLink: input.private ? crypto.randomUUID() : null,
+        sharedLink: input.private ? this.generateSharedLink() : null,
         avatarId: input.avatarId ?? null,
         users: {
           create: {
