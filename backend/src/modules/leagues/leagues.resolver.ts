@@ -41,4 +41,9 @@ export class LeaguesResolver {
     await this.leaguesService.leaveLeague(input.leagueId, req.user.userId);
     return true;
   }
+
+  @Query(() => LeagueModel)
+  async mainLeague(@Context('req') req: any) {
+    return this.leaguesService.addUserToMainLeague(req.user.userId);
+  }
 }

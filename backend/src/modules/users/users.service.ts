@@ -4,10 +4,14 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from '@prisma/client';
 import { AvatarModel } from './models/avatar.model';
+import { LeaguesService } from '../leagues/leagues.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly leaguesService: LeaguesService
+  ) {}
 
   async createUser(data: CreateUserInput): Promise<User> {
     const email = data.email.trim().toLowerCase();
@@ -38,7 +42,7 @@ export class UsersService {
 
     const hashed = await bcrypt.hash(data.password, 10);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email,
         firstname: data.firstname.trim(),
@@ -48,6 +52,11 @@ export class UsersService {
         role: 'user',
       },
     });
+
+    // Ajouter automatiquement l'utilisateur à la ligue principale
+    await this.leaguesService.addUserToMainLeague(user.id);
+
+    return user;
   }
 
   async findByEmail(email: string): Promise<User | null> {

@@ -1,11 +1,34 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateLeagueInput } from './dto/create-league.input';
 import { JoinLeagueInput } from './dto/join-league.input';
 
 @Injectable()
-export class LeaguesService {
+export class LeaguesService implements OnModuleInit {
+  private readonly MAIN_LEAGUE_NAME = 'Ligue Principale';
+  
   constructor(private readonly prisma: PrismaService) {}
+
+  async onModuleInit() {
+    await this.getOrCreateMainLeague();
+  }
+
+  private async getOrCreateMainLeague() {
+    const mainLeague = await this.prisma.league.findFirst({
+      where: { name: this.MAIN_LEAGUE_NAME },
+    });
+
+    if (!mainLeague) {
+      return this.prisma.league.create({
+        data: {
+          name: this.MAIN_LEAGUE_NAME,
+          private: false,
+        },
+      });
+    }
+
+    return mainLeague;
+  }
 
   async createLeague(input: CreateLeagueInput, userId: string) {
     if (input.avatarId) {
@@ -120,5 +143,30 @@ export class LeaguesService {
     });
 
     return { success: true };
+  }
+
+  async addUserToMainLeague(userId: string) {
+    const mainLeague = await this.getOrCreateMainLeague();
+    
+    const existingMembership = await this.prisma.userLeague.findUnique({
+      where: { 
+        leagueId_userId: {
+          leagueId: mainLeague.id,
+          userId: userId
+        }
+      },
+    });
+
+    if (!existingMembership) {
+      await this.prisma.userLeague.create({
+        data: {
+          leagueId: mainLeague.id,
+          userId: userId,
+          role: 'user',
+        },
+      });
+    }
+
+    return mainLeague;
   }
 }
