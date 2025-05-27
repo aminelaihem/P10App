@@ -1,8 +1,8 @@
 // src/modules/f1data/f1data.service.ts
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { SyncPilotesService } from './sync/sync.pilotes';
-import { SyncTracksService } from './sync/sync.tracks';
-import { SyncGPsService } from './sync/sync.gps';
+//import { SyncTracksService } from './sync/sync.tracks';
+//import { SyncGPsService } from './sync/sync.gps';
 import { SyncResultsService } from './sync/sync.results';
 import { F1EntryService } from './f1-entry.service';
 import { SyncCalendarService } from './sync/sync.calendar';
@@ -13,8 +13,8 @@ export class F1DataService implements OnModuleInit {
   constructor(
     private readonly calendarService: SyncCalendarService,
     private readonly pilotesService: SyncPilotesService,
-    private readonly tracksService: SyncTracksService,
-    private readonly gpsService: SyncGPsService,
+  //  private readonly tracksService: SyncTracksService,
+  //  private readonly gpsService: SyncGPsService,
     private readonly resultsService: SyncResultsService,
     private readonly entryService: F1EntryService,
   ) {}
@@ -30,8 +30,8 @@ export class F1DataService implements OnModuleInit {
     try {
       await this.calendarService.syncGPsFromJolpica(year);
       await this.pilotesService.syncPilotesEtEcuries(year);
-      await this.tracksService.syncTracksFromMeetings(year);
-      await this.gpsService.syncGPsFromMeetings(year);
+    //  await this.tracksService.syncTracksFromMeetings(year);
+    //  await this.gpsService.syncGPsFromMeetings(year);
       await this.entryService.generateEntriesForUpcomingGPs(year); // 👈
       await this.resultsService.syncAllAvailableResults();
 
@@ -45,14 +45,14 @@ export class F1DataService implements OnModuleInit {
   async syncPilotes(year: string) {
     return this.pilotesService.syncPilotesEtEcuries(year);
   }
-
+/*
   async syncTracks(year: string) {
     return this.tracksService.syncTracksFromMeetings(year);
   }
 
   async syncGPs(year: string) {
     return this.gpsService.syncGPsFromMeetings(year);
-  }
+  }*/
 
   async syncResults() {
     return this.resultsService.syncAllAvailableResults();

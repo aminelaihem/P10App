@@ -19,7 +19,7 @@ export class F1DataResolver {
     await this.f1DataService.syncPilotes(year);
     return true;
   }
-
+/*
   @Mutation(() => Boolean)
   async syncF1Tracks(@Args('year') year: string) {
     await this.f1DataService.syncTracks(year);
@@ -30,7 +30,7 @@ export class F1DataResolver {
   async syncF1GPs(@Args('year') year: string) {
     await this.f1DataService.syncGPs(year);
     return true;
-  }
+  }*/
 
   @Mutation(() => Boolean)
   async syncF1Results() {

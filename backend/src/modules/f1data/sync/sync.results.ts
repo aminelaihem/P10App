@@ -81,7 +81,7 @@ export class SyncResultsService {
           datetime: {
             // La date de l'API est 3 jours après la date réelle du GP
             gte: new Date(new Date(raceDate).setDate(new Date(raceDate).getDate() - 4)), // -4 pour avoir la date du GP
-            lte: new Date(new Date(raceDate).setDate(new Date(raceDate).getDate() - 2)), // -2 pour avoir une marge
+            lte: new Date(new Date(raceDate).setDate(new Date(raceDate).getDate() + 1)), // -2 pour avoir une marge
           },
         },
         include: {

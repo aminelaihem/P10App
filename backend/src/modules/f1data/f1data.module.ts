@@ -5,8 +5,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { F1DataService } from './f1data.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SyncPilotesService } from './sync/sync.pilotes';
-import { SyncTracksService } from './sync/sync.tracks';
-import { SyncGPsService } from './sync/sync.gps';
+//import { SyncTracksService } from './sync/sync.tracks';
+//import { SyncGPsService } from './sync/sync.gps';
 import { SyncResultsService } from './sync/sync.results';
 import { F1DataResolver } from './f1data.resolver';
 import { F1DataSchedulerService } from './f1data-scheduler.service';
@@ -21,8 +21,8 @@ import { SyncCalendarService } from './sync/sync.calendar';
     PrismaService,
     F1EntryService,
     SyncPilotesService,
-    SyncTracksService,
-    SyncGPsService,
+  //  SyncTracksService,
+ //   SyncGPsService,
     SyncResultsService,
     F1DataService,
     F1DataResolver,

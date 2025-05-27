@@ -40,6 +40,7 @@ export class F1DataSchedulerService {
   }
 
   // Synchronisation des circuits une fois par semaine (lundi à 3h30 du matin)
+  /*
   @Cron('30 3 * * 1', {
     name: 'syncTracks',
     timeZone: 'Europe/Paris'
@@ -52,9 +53,10 @@ export class F1DataSchedulerService {
     } catch (error) {
       this.logger.error('Erreur lors de la synchronisation des circuits:', error);
     }
-  }
+  }*/
 
   // Synchronisation des GPs une fois par jour (à 4h du matin)
+  /*
   @Cron('0 4 * * *', {
     name: 'syncGPs',
     timeZone: 'Europe/Paris'
@@ -67,7 +69,7 @@ export class F1DataSchedulerService {
     } catch (error) {
       this.logger.error('Erreur lors de la synchronisation des GPs:', error);
     }
-  }
+  }*/
 
   // Synchronisation complète une fois par jour (à 5h du matin)
   @Cron('0 5 * * *', {

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+/*import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { F1_API_CONFIG } from '../config/api.config';
@@ -80,3 +80,4 @@ export class SyncGPsService {
     }
   }
 }
+*/
