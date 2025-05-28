@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
+import { gqlClient } from "@/lib/gqlClient";
 
 interface Avatar {
-  id: string;  // UUID string
+  id: string;
   pictureAvatarUrl: string;
 }
 
@@ -12,6 +13,15 @@ interface AvatarSelectorProps {
   onSelect: (avatarId: string) => void;
   selectedAvatarId?: string;
 }
+
+const GET_AVAILABLE_AVATARS = `
+  query GetAvailableAvatars {
+    availableAvatars {
+      id
+      pictureAvatarUrl
+    }
+  }
+`;
 
 export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSelectorProps) {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
@@ -21,23 +31,11 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
   useEffect(() => {
     const fetchAvatars = async () => {
       try {
-        const response = await fetch("/api/avatars");
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        const data = await response.json();
-        
-        if (Array.isArray(data) && data.every(avatar => avatar.id && avatar.pictureAvatarUrl)) {
-          setAvatars(data);
-        } else {
-          console.error("Format de données invalide:", data);
-          setError("Format de données incorrect");
-          setAvatars([]);
-        }
-      } catch (error) {
-        console.error("Erreur lors du chargement des avatars:", error);
-        setError("Impossible de charger les avatars");
-        setAvatars([]);
+        const response = await gqlClient(GET_AVAILABLE_AVATARS);
+        setAvatars(response.availableAvatars);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Erreur lors du chargement des avatars");
       } finally {
         setLoading(false);
       }
@@ -56,10 +54,8 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
 
   if (error) {
     return (
-      <div className="input-group-f1 p-4">
-        <div className="text-f1red text-center">
-          {error}
-        </div>
+      <div className="text-red-500 text-center">
+        {error}
       </div>
     );
   }
@@ -71,7 +67,7 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
         <span className="text-white/90">Choisissez votre avatar</span>
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 w-full">
-        {avatars.map((avatar) => (
+        {avatars.map((avatar: Avatar) => (
           <button
             key={avatar.id}
             type="button"

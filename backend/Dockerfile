@@ -18,8 +18,8 @@ RUN npx prisma generate
 # Compile le projet
 RUN npm run build
 
-# Expose le port (optionnel si tu utilises GraphQL, sinon adapte)
-EXPOSE 3000
+# Expose le port 3001 pour GraphQL
+EXPOSE 3001
 
 # Démarre l'application
 CMD ["npm", "run", "start:prod"]
