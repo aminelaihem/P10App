@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
 
 interface Avatar {
-  id: string;
+  id: string;  // UUID string
   pictureAvatarUrl: string;
 }
 
@@ -16,15 +16,28 @@ interface AvatarSelectorProps {
 export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSelectorProps) {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAvatars = async () => {
       try {
         const response = await fetch("/api/avatars");
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
         const data = await response.json();
-        setAvatars(data);
+        
+        if (Array.isArray(data) && data.every(avatar => avatar.id && avatar.pictureAvatarUrl)) {
+          setAvatars(data);
+        } else {
+          console.error("Format de données invalide:", data);
+          setError("Format de données incorrect");
+          setAvatars([]);
+        }
       } catch (error) {
         console.error("Erreur lors du chargement des avatars:", error);
+        setError("Impossible de charger les avatars");
+        setAvatars([]);
       } finally {
         setLoading(false);
       }
@@ -37,6 +50,16 @@ export default function AvatarSelector({ onSelect, selectedAvatarId }: AvatarSel
     return (
       <div className="flex justify-center">
         <div className="loader-f1-red" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="input-group-f1 p-4">
+        <div className="text-f1red text-center">
+          {error}
+        </div>
       </div>
     );
   }

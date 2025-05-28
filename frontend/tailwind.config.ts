@@ -5,6 +5,9 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./features/**/*.{js,ts,jsx,tsx}",
+    "./app.{js,ts,jsx,tsx}", // 👈 Ajoute ceci
+    "./app/layout.tsx",      // 👈 Et ceci
+    "./app/page.tsx"         // 👈 Et ceci aussi
   ],
   theme: {
     extend: {
